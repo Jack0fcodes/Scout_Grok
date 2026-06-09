@@ -1,45 +1,38 @@
-{
-  "generatedAt": "2026-06-09T14:23:00Z",
-  "count": 3,
-  "leads": [
-    {
-      "id": "Twitter-2064154213026787469",
-      "platform": "Twitter/X",
-      "source": "@qozyboy",
-      "author": "polo* (@qozyboy)",
-      "title": "Commissioning starting artists for logos and graphic ads",
-      "description": "Looking to commission starting artists for logo work or little graphic ads in a specific style. DM for details.",
-      "priority": "High",
-      "budget": null,
-      "contact": "DM on X",
-      "postLink": "https://x.com/qozyboy/status/2064154213026787469",
-      "datePosted": "2026-06-09T01:14:49Z"
-    },
-    {
-      "id": "Twitter-2064108373579055385",
-      "platform": "Twitter/X",
-      "source": "@Chris_Boland",
-      "author": "Timeless(in mourning) Tone Schiavonehausen (@Chris_Boland)",
-      "title": "Commission stream assets: emotes, BRBs, ending screens",
-      "description": "Looking to commission emotes, BRB screens, and ending screens for stream. Twitch: paraboxboland.",
-      "priority": "Medium",
-      "budget": null,
-      "contact": "DM on X or Twitch",
-      "postLink": "https://x.com/Chris_Boland/status/2064108373579055385",
-      "datePosted": "2026-06-08T22:12:40Z"
-    },
-    {
-      "id": "Twitter-2064107875119858100",
-      "platform": "Twitter/X",
-      "source": "@enchanting_li",
-      "author": "Enchantress’ SHOP™ (@enchanting_li)",
-      "title": "Commission artist for Royale High designs",
-      "description": "Looking to commission an artist for intricate detailed designs, preferably fully rendered. Paying with RHD/Halos. Drop samples in comments.",
-      "priority": "High",
-      "budget": null,
-      "contact": "Comments or DM on X",
-      "postLink": "https://x.com/enchanting_li/status/2064107875119858100",
-      "datePosted": "2026-06-08T22:10:41Z"
-    }
-  ]
-}
+[
+  {
+    "post_id": "Twitter-2064154213026787469",
+    "platform": "Twitter/X",
+    "source": "@qozyboy",
+    "author": "polo* (@qozyboy)",
+    "title": "Commissioning starting artists for logos and graphic ads",
+    "content": "Looking to commission starting artists for logo work or little graphic ads in a specific style. DM for details. Contact: DM on X.",
+    "url": "https://x.com/qozyboy/status/2064154213026787469",
+    "quality": "High Quality",
+    "budget": "",
+    "created_at": "2026-06-09T01:14:49Z"
+  },
+  {
+    "post_id": "Twitter-2064108373579055385",
+    "platform": "Twitter/X",
+    "source": "@Chris_Boland",
+    "author": "Timeless(in mourning) Tone Schiavonehausen (@Chris_Boland)",
+    "title": "Commission stream assets: emotes, BRBs, ending screens",
+    "content": "Looking to commission emotes, BRB screens, and ending screens for stream. Twitch: paraboxboland. Contact: DM on X or Twitch.",
+    "url": "https://x.com/Chris_Boland/status/2064108373579055385",
+    "quality": "Medium",
+    "budget": "",
+    "created_at": "2026-06-08T22:12:40Z"
+  },
+  {
+    "post_id": "Twitter-2064107875119858100",
+    "platform": "Twitter/X",
+    "source": "@enchanting_li",
+    "author": "Enchantress' SHOP™ (@enchanting_li)",
+    "title": "Commission artist for Royale High designs",
+    "content": "Looking to commission an artist for intricate detailed designs, preferably fully rendered. Paying with RHD/Halos. Drop samples in comments. Contact: Comments or DM on X.",
+    "url": "https://x.com/enchanting_li/status/2064107875119858100",
+    "quality": "High Quality",
+    "budget": "",
+    "created_at": "2026-06-08T22:10:41Z"
+  }
+]
