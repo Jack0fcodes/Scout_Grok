@@ -5,6 +5,14 @@ Grok appends each new post below as a new entry, newest at the top.
 
 <!-- GROK: Add each new post as a new section directly below this line. Keep this comment in place. -->
 
+## @example_handle — 2026-06-09
+
+> Paste the full post text here.
+
+- **Source:** https://x.com/example_handle/status/123
+- **Posted:** 2026-06-09
+- **Fetched:** 2026-06-09
+
 ---
 
 <!-- Example entry format — Grok should follow this layout:
