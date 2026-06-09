@@ -1,34 +1,10 @@
-# Fetched Posts
+# Artist Client Leads
 
-This file is the destination for posts fetched by the Grok app task automation.
-Grok appends each new post below as a new entry, newest at the top.
+Destination for client leads gathered by the Grok task automation.
+Each run adds a new dated section at the top, with a table of real clients hiring artists.
 
-<!-- GROK: Add each new post as a new section directly below this line. Keep this comment in place. -->
+<!-- GROK: Insert each new run as a new "## Leads — <date>" section directly below this line. Keep newest at the top and keep this comment in place. -->
 
-## @example_handle — 2026-06-09
-
-> test success
-
-- **Source:** https://x.com/example_handle/status/123
-- **Posted:** 2026-06-09
-- **Fetched:** 2026-06-09
-
----
-
-<!-- Example entry format — Grok should follow this layout:
-
-## <Post author / handle> — <date fetched>
-
-> <Full post text>
-
-- **Source:** <post URL>
-- **Posted:** <original post date>
-- **Fetched:** <YYYY-MM-DD>
-
----
+<!-- Lead table columns (Grok must follow this exact format):
+| Platform | Post Title / Short Description | Client Requirements | Estimated Budget | Contact Method (link or username) | Post Link | Date Posted |
 -->
-# Grok Connection Test - June 9, 2026
-
-✅ Grok successfully sent test data to GitHub!
-
-This confirms the file is editable. You can now use automation for artist leads.
