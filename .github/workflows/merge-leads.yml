@@ -25,11 +25,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-
+      # ubuntu-latest ships Python 3 preinstalled, and the merge script is
+      # pure stdlib — so we skip actions/setup-python to shave run time.
       - name: Merge inbox into leads.json
         run: python3 .github/scripts/merge_leads.py
 
