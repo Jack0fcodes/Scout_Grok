@@ -77,9 +77,8 @@ The app reads via the GitHub Contents API with `Accept: application/vnd.github.v
 https://api.github.com/repos/<owner>/<repo>/contents/leads.json?ref=main
 ```
 
-The Reddit feed is written by `Jack0fcodes/redd0tBot`. Grok writes the non-Reddit
-feed here in `Jack0fcodes/Scout_Grok`. See the app's `LeadStore.swift` `endpoint`
-constant to point it at the desired source(s).
+The Reddit feed and the non-Reddit (Grok) feed each live in their own repo. Point the
+app's `LeadStore.swift` `endpoint` constant at the desired source(s).
 
 ## Grok task prompt (create-only — paste into the scheduled Grok task)
 
