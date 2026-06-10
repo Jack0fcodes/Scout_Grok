@@ -1,0 +1,46 @@
+name: Merge leads
+
+# Grok writes one create-only file per run into inbox/. This workflow merges them
+# into the canonical leads.json (de-dupe, sort, schema-normalize) and clears inbox/.
+# Pushes made by GITHUB_TOKEN do not re-trigger workflows, so there is no loop.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "inbox/**"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: merge-leads
+  cancel-in-progress: false
+
+jobs:
+  merge:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Merge inbox into leads.json
+        run: python3 .github/scripts/merge_leads.py
+
+      - name: Commit merged feed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add leads.json inbox/
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "Merge new leads into leads.json [skip ci]"
+            git push
+          fi
