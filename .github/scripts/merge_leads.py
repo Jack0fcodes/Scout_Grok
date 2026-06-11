@@ -18,8 +18,10 @@ from __future__ import annotations
 import glob
 import json
 import os
+import re
 import sys
 from datetime import datetime, timezone
+from urllib.parse import urlsplit
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 LEADS_PATH = os.path.join(REPO_ROOT, "leads.json")
@@ -99,6 +101,27 @@ def normalize_lead(raw: dict) -> dict | None:
     }
 
 
+def dedupe_key(lead: dict) -> str:
+    """A stable key identifying the same real post across runs.
+
+    Grok formats post_id inconsistently (e.g. "x-123" vs "twitter-123"), so we key
+    on the post URL instead. For Twitter/X we extract the numeric status id, which is
+    identical regardless of x.com vs twitter.com, www, tracking query params, or handle.
+    Falls back to a normalized URL, then to post_id.
+    """
+    url = (lead.get("url") or "").strip()
+    if url:
+        m = re.search(r"(?:twitter\.com|x\.com)/[^/]+/status(?:es)?/(\d+)", url, re.I)
+        if m:
+            return "x:" + m.group(1)
+        parts = urlsplit(url if "://" in url else "https://" + url)
+        host = parts.netloc.lower()
+        if host.startswith("www."):
+            host = host[4:]
+        return host + parts.path.rstrip("/").lower()
+    return "id:" + (lead.get("post_id") or "").strip().lower()
+
+
 def load_array(path: str) -> list[dict]:
     """Load a JSON file that may be a bare array, a wrapper object, or a single object."""
     try:
@@ -131,14 +154,15 @@ def main() -> int:
     # Normalize, drop empties.
     normalized = [n for n in (normalize_lead(r) for r in records) if n]
 
-    # De-duplicate by post_id, keeping the newest (by created_at) occurrence.
+    # De-duplicate by canonical post key (URL-based), keeping the newest occurrence.
     normalized.sort(key=lambda r: r["created_at"], reverse=True)
     seen: set[str] = set()
     merged: list[dict] = []
     for rec in normalized:
-        if rec["post_id"] in seen:
+        key = dedupe_key(rec)
+        if key in seen:
             continue
-        seen.add(rec["post_id"])
+        seen.add(key)
         merged.append(rec)
 
     merged = merged[:MAX_LEADS]
