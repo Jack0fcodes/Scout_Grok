@@ -1,5 +1,17 @@
 [
   {
+    "post_id": "TEST-raceretry-001",
+    "platform": "Twitter/X",
+    "source": "@scout_test",
+    "author": "Scout Test",
+    "title": "RACE-RETRY WORKFLOW TEST (safe to delete)",
+    "content": "Verifying the resilient merge+push step still works on a normal run.",
+    "url": "https://example.com/racetest",
+    "quality": "Low",
+    "budget": "",
+    "created_at": "2026-09-08T00:00:00Z"
+  },
+  {
     "post_id": "twitter-2097098310288908683",
     "platform": "Twitter/X",
     "source": "@Luniare_vt",
@@ -5986,17 +5998,5 @@
     "quality": "High Quality",
     "budget": "",
     "created_at": "2026-06-08T17:38:36Z"
-  },
-  {
-    "post_id": "Twitter/X-2063836218497159300",
-    "platform": "Twitter/X",
-    "source": "@azeclipse_",
-    "author": "AZE",
-    "title": "LF digital artist",
-    "content": "Looking for a digital artist and can edit simple videos. Requirements: can do manhwa/anime art style, create 3 or more videos per week, won't ghost us. PM me for more infos!",
-    "url": "https://x.com/azeclipse_/status/2063836218497159300",
-    "quality": "Medium",
-    "budget": "",
-    "created_at": "2026-06-08T04:11:13Z"
   }
 ]
