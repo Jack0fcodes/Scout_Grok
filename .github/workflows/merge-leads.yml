@@ -27,17 +27,31 @@ jobs:
 
       # ubuntu-latest ships Python 3 preinstalled, and the merge script is
       # pure stdlib — so we skip actions/setup-python to shave run time.
-      - name: Merge inbox into leads.json
-        run: python3 .github/scripts/merge_leads.py
-
-      - name: Commit merged feed
+      #
+      # Merge + push with retry: if another run (or a Grok inbox push) advances
+      # main between our checkout and our push, git rejects the push. We re-sync
+      # to the latest main, re-run the (idempotent) merge, and try again instead
+      # of failing the run.
+      - name: Merge inbox into leads.json and push
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add leads.json inbox/
-          if git diff --cached --quiet; then
-            echo "No changes to commit."
-          else
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git reset --hard origin/main
+            python3 .github/scripts/merge_leads.py
+            if git diff --quiet; then
+              echo "No changes to commit."
+              exit 0
+            fi
+            git add leads.json inbox/
             git commit -m "Merge new leads into leads.json [skip ci]"
-            git push
-          fi
+            if git push origin HEAD:main; then
+              echo "Pushed on attempt $attempt."
+              exit 0
+            fi
+            echo "Push rejected (race) on attempt $attempt; re-syncing and retrying..."
+            sleep 3
+          done
+          echo "Failed to push after 5 attempts." >&2
+          exit 1
