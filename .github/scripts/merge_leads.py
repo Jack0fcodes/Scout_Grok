@@ -27,7 +27,7 @@ REPO_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__fi
 LEADS_PATH = os.path.join(REPO_ROOT, "leads.json")
 INBOX_GLOB = os.path.join(REPO_ROOT, "inbox", "*.json")
 
-MAX_LEADS = 500
+MAX_LEADS = 2000
 VALID_QUALITY = {"High Quality", "Medium", "Low"}
 
 # Required keys in the exact order the app expects.
