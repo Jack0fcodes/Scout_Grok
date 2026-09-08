@@ -1,17 +1,5 @@
 [
   {
-    "post_id": "TEST-raceretry-001",
-    "platform": "Twitter/X",
-    "source": "@scout_test",
-    "author": "Scout Test",
-    "title": "RACE-RETRY WORKFLOW TEST (safe to delete)",
-    "content": "Verifying the resilient merge+push step still works on a normal run.",
-    "url": "https://example.com/racetest",
-    "quality": "Low",
-    "budget": "",
-    "created_at": "2026-09-08T00:00:00Z"
-  },
-  {
     "post_id": "twitter-2097098310288908683",
     "platform": "Twitter/X",
     "source": "@Luniare_vt",
