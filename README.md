@@ -10,14 +10,19 @@ Grok run  ──► creates inbox/<timestamp>.json   (create-only: cannot overwr
                        │
                        ▼
         GitHub Action (merge-leads.yml)
-          • merges all inbox files into leads.json
-          • de-dupes by post_id, sorts newest-first
+          • merges all inbox files, routes each lead by platform:
+              - Meta (Facebook/Instagram/Threads) ─► leads_meta.json
+              - everything else (Twitter/X, ...)   ─► leads.json
+          • de-dupes by post URL, sorts newest-first
           • normalizes to the exact app schema
           • clears inbox/
                        │
                        ▼
-        Scout iOS app  ──► reads leads.json   (single, always-valid file)
+        Scout iOS app  ──► reads leads.json  +  leads_meta.json
 ```
+
+Both feed files use the identical schema below. Both Grok tasks (X and Meta) write to
+the same `inbox/`; the Action splits their output into the two endpoints by platform.
 
 **Why this design:** Grok's connector can only *replace* a whole file, so asking it
 to edit `leads.json` directly caused every run to wipe the previous leads. Instead,

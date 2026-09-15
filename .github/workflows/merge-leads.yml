@@ -44,7 +44,7 @@ jobs:
               echo "No changes to commit."
               exit 0
             fi
-            git add leads.json inbox/
+            git add leads.json leads_meta.json inbox/
             git commit -m "Merge new leads into leads.json [skip ci]"
             if git push origin HEAD:main; then
               echo "Pushed on attempt $attempt."

@@ -24,8 +24,13 @@ from datetime import datetime, timezone
 from urllib.parse import urlsplit
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-LEADS_PATH = os.path.join(REPO_ROOT, "leads.json")
 INBOX_GLOB = os.path.join(REPO_ROOT, "inbox", "*.json")
+
+# Grok writes create-only files into a single inbox/. This script routes each lead
+# to the right endpoint file BY PLATFORM, so the X/Twitter and Meta feeds stay
+# separate without either Grok task needing its own inbox.
+X_FEED = "leads.json"          # Twitter/X (and any non-Meta platform)
+META_FEED = "leads_meta.json"  # Meta platforms: Facebook, Instagram, Threads
 
 MAX_LEADS = 2000
 VALID_QUALITY = {"High Quality", "Medium", "Low"}
@@ -122,6 +127,14 @@ def dedupe_key(lead: dict) -> str:
     return "id:" + (lead.get("post_id") or "").strip().lower()
 
 
+def feed_for(lead: dict) -> str:
+    """Route a lead to its endpoint file by platform."""
+    p = (lead.get("platform") or "").strip().lower()
+    if any(k in p for k in ("facebook", "instagram", "threads", "meta")) or p in {"fb", "ig"}:
+        return META_FEED
+    return X_FEED
+
+
 def load_array(path: str) -> list[dict]:
     """Load a JSON file that may be a bare array, a wrapper object, or a single object."""
     try:
@@ -139,44 +152,55 @@ def load_array(path: str) -> list[dict]:
     return []
 
 
+def _finalize(normalized: list[dict]) -> list[dict]:
+    """De-duplicate by canonical post key (newest wins), sort, and cap."""
+    normalized.sort(key=lambda r: r["created_at"], reverse=True)
+    seen: set[str] = set()
+    out: list[dict] = []
+    for rec in normalized:
+        key = dedupe_key(rec)
+        if key in seen:
+            continue
+        seen.add(key)
+        out.append(rec)
+    return out[:MAX_LEADS]
+
+
 def main() -> int:
     records: list[dict] = []
 
-    # Existing canonical feed first (lowest priority on ties).
-    if os.path.exists(LEADS_PATH):
-        records.extend(load_array(LEADS_PATH))
+    # Existing feed files first (lowest priority on ties). Reading both means Meta
+    # leads currently mixed into leads.json get re-routed to leads_meta.json.
+    for feed in (X_FEED, META_FEED):
+        path = os.path.join(REPO_ROOT, feed)
+        if os.path.exists(path):
+            records.extend(load_array(path))
 
     # All inbox files (each run Grok wrote).
     inbox_files = sorted(glob.glob(INBOX_GLOB))
     for path in inbox_files:
         records.extend(load_array(path))
 
-    # Normalize, drop empties.
-    normalized = [n for n in (normalize_lead(r) for r in records) if n]
+    # Normalize, drop empties, and route each lead to its feed by platform.
+    buckets: dict[str, list[dict]] = {X_FEED: [], META_FEED: []}
+    for raw in records:
+        lead = normalize_lead(raw)
+        if lead:
+            buckets[feed_for(lead)].append(lead)
 
-    # De-duplicate by canonical post key (URL-based), keeping the newest occurrence.
-    normalized.sort(key=lambda r: r["created_at"], reverse=True)
-    seen: set[str] = set()
-    merged: list[dict] = []
-    for rec in normalized:
-        key = dedupe_key(rec)
-        if key in seen:
-            continue
-        seen.add(key)
-        merged.append(rec)
-
-    merged = merged[:MAX_LEADS]
-
-    with open(LEADS_PATH, "w", encoding="utf-8") as fh:
-        json.dump(merged, fh, ensure_ascii=False, indent=2)
-        fh.write("\n")
+    for feed, recs in buckets.items():
+        merged = _finalize(recs)
+        with open(os.path.join(REPO_ROOT, feed), "w", encoding="utf-8") as fh:
+            json.dump(merged, fh, ensure_ascii=False, indent=2)
+            fh.write("\n")
+        print(f"{feed}: {len(merged)} unique leads")
 
     # Clear processed inbox files (the Action commit uses GITHUB_TOKEN, which does
     # not re-trigger the workflow, so there is no risk of a loop).
     for path in inbox_files:
         os.remove(path)
 
-    print(f"Merged {len(merged)} unique leads from {len(inbox_files)} inbox file(s).")
+    print(f"Processed {len(inbox_files)} inbox file(s).")
     return 0
 
 
