@@ -116,9 +116,23 @@ def dedupe_key(lead: dict) -> str:
     """
     url = (lead.get("url") or "").strip()
     if url:
+        # Twitter/X status id (same post regardless of x.com/twitter.com, handle, params).
         m = re.search(r"(?:twitter\.com|x\.com)/[^/]+/status(?:es)?/(\d+)", url, re.I)
         if m:
             return "x:" + m.group(1)
+        # Instagram post/reel shortcode (same post via /p/CODE or /<user>/p/CODE).
+        m = re.search(r"instagram\.com/(?:[^/]+/)?(?:p|reel|tv)/([A-Za-z0-9_-]+)", url, re.I)
+        if m:
+            return "ig:" + m.group(1)
+        # Threads post id.
+        m = re.search(r"threads\.(?:net|com)/@[^/]+/post/([A-Za-z0-9_-]+)", url, re.I)
+        if m:
+            return "th:" + m.group(1)
+        # Facebook numeric post/story id (posts/, permalink/, story_fbid=, fbid=).
+        m = re.search(r"facebook\.com/.*?(?:/posts/|/permalink/|story_fbid=|[?&]fbid=)(\d+)", url, re.I)
+        if m:
+            return "fb:" + m.group(1)
+        # Fallback: normalized host + path (no query/fragment/trailing slash).
         parts = urlsplit(url if "://" in url else "https://" + url)
         host = parts.netloc.lower()
         if host.startswith("www."):
